@@ -7,3 +7,14 @@ export interface ItemSummary {
   diffWeekAgo: number;
   searchDate: string;
 }
+
+export type BasicItemSummary = Omit<
+  ItemSummary,
+  "diffWeekAgo" | "searchDate" | "rank"
+>;
+
+export interface ItemPrice {
+  price: number;
+  rank: string;
+  searchDate: Date;
+}

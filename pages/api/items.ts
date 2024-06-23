@@ -1,8 +1,8 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { openDB } from "@/db";
-import { ItemSummary } from "@/types/item";
+import { BasicItemSummary, ItemPrice, ItemSummary } from "@/types/item";
 
 type CategoryCode = "100" | "200" | "300" | "400" | "500" | "600";
 
@@ -73,7 +73,7 @@ const replaceSearchKeyword = (keyword: string) => {
 
 const retrieveItemData = async (
   keyword: string
-): Promise<Omit<ItemSummary, "diffWeekAgo" | "searchDate" | "rank">[]> => {
+): Promise<BasicItemSummary[]> => {
   // 해당 키워드를 items 테이블에서 찾아서 itemName, item_code, kindName 넣어서 반환.
   const db = await openDB();
   const items = await db.all("SELECT * FROM items WHERE item_name LIKE ?", [
@@ -91,12 +91,49 @@ const retrieveItemData = async (
   return newItems;
 };
 
+const getPrice = async (
+  item: BasicItemSummary,
+  startDate: Date
+): Promise<ItemPrice | null> => {
+  const db = await openDB();
+  let daysTracingBack = 0;
+
+  while (daysTracingBack < 10) {
+    const formattedStartDate = format(startDate, "yyyy-MM-dd");
+    const data = await db.all(
+      `SELECT * FROM item_price WHERE date='${formattedStartDate}'
+      AND item_code=${item.itemCode} AND kind_name LIKE ?`,
+      [`%${item.kindName}%`]
+    );
+    if (data.length === 0) {
+      daysTracingBack++;
+      subDays(startDate, 1);
+      continue;
+    }
+
+    const price = data[0].price;
+    if (price === 0) {
+      daysTracingBack++;
+      subDays(startDate, 1);
+    } else {
+      const result: ItemPrice = {
+        price,
+        rank: data[0].rank,
+        searchDate: startDate,
+      };
+      return result;
+    }
+  }
+
+  return null;
+};
+
 // TODO: searchKey 쿼리파람으로 받아서 사과 대치
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ItemSummary[]>
 ) => {
-  // const today = new Date(2019, 0, 1);
+  const today = new Date(2020, 0, 3);
 
   const keywords = replaceSearchKeyword("사과");
   let items: Omit<ItemSummary, "diffWeekAgo" | "searchDate" | "rank">[] = [];
@@ -105,18 +142,22 @@ const handler = async (
     items = [...items, ...itemDetails];
   }
 
-  // TODO: 요청 들어온 상품의 카테고리
-  const categoryCode = "600";
+  let result: ItemSummary[] = [];
+  for (const item of items) {
+    const todayPrice = await getPrice(item, today);
+    const lastWeekPrice = await getPrice(item, subDays(today, 7));
 
-  // TODO: db 가격 조회 후 가격 차이, rank 반환값에 추가
-  const result = items.map((item) => {
-    return {
-      ...item,
-      diffWeekAgo: -1000,
-      searchDate: "2019-01-01",
-      rank: "",
-    };
-  });
+    if (todayPrice && lastWeekPrice) {
+      const diffWeekAgo = todayPrice.price - lastWeekPrice.price;
+      const newItem: ItemSummary = {
+        ...item,
+        diffWeekAgo,
+        rank: todayPrice.rank,
+        searchDate: format(todayPrice.searchDate, "yyyy-MM-dd"),
+      };
+      result = [...result, newItem];
+    }
+  }
 
   return res.status(200).json(result);
 };
