@@ -92,11 +92,14 @@ const retrieveItemData = async (
 };
 
 // TODO: searchKey 쿼리파람으로 받아서 사과 대치
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ItemSummary[]>
+) => {
   // const today = new Date(2019, 0, 1);
 
   const keywords = replaceSearchKeyword("사과");
-  let items: Partial<ItemSummary>[] = [];
+  let items: Omit<ItemSummary, "diffWeekAgo" | "searchDate" | "rank">[] = [];
   for (const keyword of keywords) {
     const itemDetails = await retrieveItemData(keyword);
     items = [...items, ...itemDetails];
@@ -105,9 +108,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // TODO: 요청 들어온 상품의 카테고리
   const categoryCode = "600";
 
-  // TODO: db 가격 조회 후 가격 차이 반환값에 추가
+  // TODO: db 가격 조회 후 가격 차이, rank 반환값에 추가
+  const result = items.map((item) => {
+    return {
+      ...item,
+      diffWeekAgo: -1000,
+      searchDate: "2019-01-01",
+      rank: "",
+    };
+  });
 
-  return res.status(200).json(items);
+  return res.status(200).json(result);
 };
 
 export default handler;
