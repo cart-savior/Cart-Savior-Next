@@ -15,7 +15,7 @@ export default function Home() {
         <h1>cart savior</h1>
         <button
           onClick={async () => {
-            const { data } = await axios.get("/api/price");
+            const { data } = await axios.get("/api/items");
             console.log(data);
           }}
         >
