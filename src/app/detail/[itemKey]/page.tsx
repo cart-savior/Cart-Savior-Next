@@ -24,27 +24,6 @@ const item = {
   wiki: "쌀은 밥의 원료로 사용되는 곡식입니다."
 };
 
-// const market = [
-//   {
-//     name: "마켓컬리",
-//     price: 10000,
-//     link: "https://www.kurly.com/shop/main/index.php",
-//     image: "https://img-cf.kurly.com/shop/data/main/1/pc_img_1631224396.jpg"
-//   },
-//   {
-//     name: "쿠팡",
-//     price: 11000,
-//     link: "https://www.coupang.com/",
-//     image: "https://image10.coupangcdn.com/image/coupang/common/logo_coupang_w.png"
-//   },
-//   {
-//     name: "이마트",
-//     price: 9500,
-//     link: "https://www.emart.com/",
-//     image: "https://www.emart.com/kr/ko/images/common/logo.png"
-//   }
-// ];
-
 type Unit = 'kg' | 'g' | 'mg';
 
 export default function SearchPage({ params }: { params: { itemKey: string } }) {
@@ -67,16 +46,16 @@ export default function SearchPage({ params }: { params: { itemKey: string } }) 
     { name: '지난 해', value: item.last_year }
   ];
 
-  // const CustomLabel = ({ x, y, value }: any) => (
-  //   <text x={x} y={y} dy={-10} textAnchor="middle" fill="#666">
-  //     {value.toLocaleString()}원
-  //   </text>
-  // );
+  const CustomLabel = ({ x = 0, y = 0, value = '' }) => (
+    <text x={x + 25} y={y} dy={-10} textAnchor="middle" fill="#4ea38e" fontSize="14px" fontWeight="bold">
+    {value} 원
+  </text>
+  );
 
   return (
     <Box as="section" p={4}>
       <Box mb={4} className={`${styles.item_info} ${styles[`type_${item.item_code}`]}`} display="block">
-        <Heading as="h3" size="md" mb={2}>{item.item_name} ({item.rank})</Heading>
+        <Heading as="h3" size="md">{item.item_name} ({item.rank})</Heading>
         <Text fontSize="sm" color="gray.500">{item.kind_name}</Text>
       </Box>
 
@@ -118,10 +97,16 @@ export default function SearchPage({ params }: { params: { itemKey: string } }) 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 'dataMax + 1000']} />
+              <XAxis dataKey="name" tickMargin={14} />
+              <YAxis hide domain={[0, 'dataMax + 1000']} />
               <Tooltip />
-              <Bar dataKey="value" fill="#4ea38e" label={{ position: 'top', formatter: (value: any) => `${value.toLocaleString()}원` }}>
+              <Bar
+                dataKey="value"
+                fill="#4ea38e"
+                barSize={50} 
+                radius={[10, 10, 0, 0]}
+                label={CustomLabel}
+              >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={index === 0 ? '#4ea37a' : '#AEE4BD'} /> // 첫 번째 막대의 색상 변경
                 ))}
@@ -138,37 +123,6 @@ export default function SearchPage({ params }: { params: { itemKey: string } }) 
           <Text size="lg" fontWeight="bold">{item.wiki}</Text>
         </Box>
       </Flex>
-
-      {/* {market.length > 0 && (
-        <Box mb={4}>
-          <Heading as="h3" size="md">
-            현재 {item.item_name} 가격은 <br />
-            <Select placeholder='Select option' onChange={(e) => setUnit(e.target.value as Unit)}>
-              <option value='kg'>kg</option>
-              <option value='g'>g</option>
-              <option value='mg'>mg</option>
-            </Select>
-            당 <Text as="span" id="unitPrice" color="green.500">{changeUnit(item.item_price)}</Text>원입니다.
-          </Heading>
-          <Text mt={4} color="gray.500">원하는 단위를 입력하고 비교해보세요.</Text>
-          <Box as="ul" mt={4}>
-            {market.map((item, index) => (
-              <Box as="li" key={index} p={4} bg="white" borderWidth="1px" borderRadius="md" mb={2}>
-                <Link href={item.link} target="_blank">
-                  <Flex align="center">
-                    <Image src={item.image} alt={item.name} width={50} height={50} />
-                    <Box ml={4}>
-                      <Text>{item.name}</Text>
-                      <Text color="green.500">{item.price.toLocaleString()} 원</Text>
-                    </Box>
-                  </Flex>
-                  <Button mt={2} size="sm" colorScheme="green">보러가기</Button>
-                </Link>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      )} */}
     </Box>
   )
 }

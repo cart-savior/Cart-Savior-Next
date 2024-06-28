@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Image from "next/image";
 import {
   Box,
@@ -9,9 +11,10 @@ import {
   ListItem,
   Link,
   Text,
+  Button,
 } from "@chakra-ui/react";
+import SearchBox from "@/components/SearchBox";
 import "./page.module.scss";
-import SearchBox from "./searchBox";
 
 const RANDOM_KEYS = ['쌀', '찹쌀', '콩', '팥', '녹두', '고구마', '감자', '배추', '양배추', '시금치', '상추',
 '얼갈이배추', '수박', '참외', '오이', '호박', '토마토', '무', '당근', '열무',
@@ -23,11 +26,19 @@ const RANDOM_KEYS = ['쌀', '찹쌀', '콩', '팥', '녹두', '고구마', '감�
 '새우젓', '멸치액젓', '굵은소금', '전복', '새우']
 
 export default function Home() {
-  const randomKeys = (() => {
-    return RANDOM_KEYS.sort(() => Math.random() - 0.5).slice(0, 3)
-  })();
+  const [randomKeys, setRandomKeys] = useState<string[]>([]);
+  const handleClick = () => {
+    axios.get('/api/items').then((res) => {
+      console.log(res.data);
+    });
+  }
+  useEffect(() => {
+    setRandomKeys(RANDOM_KEYS.sort(() => Math.random() - 0.5).slice(0, 3));
+  }, []);
+
   return (
     <Box as="section" h="100vh">
+      <Button onClick={handleClick}>text</Button>
       <Flex direction={{ base: "column", md: "row" }} className="main_wrap">
         <Box display="flex" flexDir="column" flex="1" p="4" justifyContent="center">
           <Heading as="h2" size="lg" mb="4">

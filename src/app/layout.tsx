@@ -1,13 +1,14 @@
 "use client";
 
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
-import "./globals.scss";
-import { Providers } from "./providers";
-import { Box, Container, HStack } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
-import SearchBox from "./searchBox";
-import { Space } from "lucide-react";
+import { Box, Container, HStack } from "@chakra-ui/react";
+import SearchBox from "@/components/SearchBox";
+import { Providers } from "./providers";
+import "./globals.scss";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,9 @@ export default function RootLayout({
               </Link>
               <SearchBox />
             </HStack>
-            <Container maxW="container.xl">{children}</Container>
+            <Suspense fallback={<Loading />}>
+              <Container maxW="container.xl">{children}</Container>
+            </Suspense>
           </Box>
         </Providers>
       </body>
