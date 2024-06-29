@@ -8,8 +8,8 @@ const getDetail = async (
   date: Date
 ): Promise<ItemDetail | null> => {
   const item = await retrieveItemDataByCode(itemCode);
-  const itemPrice = await getPrice(item, date);
   const stringDate = format(date, "yyyy-MM-dd");
+  const itemPrice = await getPrice(item, date);
 
   if (!itemPrice) {
     return null;
