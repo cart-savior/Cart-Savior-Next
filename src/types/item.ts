@@ -2,6 +2,7 @@ export interface ItemSummary {
   id: number;
   itemName: string;
   itemCode: number;
+  itemPrice: number;
   rank: string;
   kindName: string;
   diffWeekAgo: number;
@@ -24,7 +25,10 @@ export interface ItemDetail {
   last_year_date: string;
   wiki: string;
 }
-export type BasicItemSummary = Omit<ItemSummary, "diffWeekAgo" | "searchDate">;
+export type BasicItemSummary = Omit<
+  ItemSummary,
+  "diffWeekAgo" | "searchDate" | "itemPrice"
+>;
 
 export interface ItemPrice {
   price: number;

@@ -5,46 +5,52 @@ import { format, subDays } from "date-fns";
 export const retrieveItemData = async (
   keyword: string
 ): Promise<BasicItemSummary[]> => {
-  // 해당 키워드를 items 테이블에서 찾아서 itemName, item_code, kindName 넣어서 반환.
   const db = await openDB();
   const items = await db.all("SELECT * FROM items WHERE item_name LIKE ?", [
     `%${keyword}%`,
   ]);
-  const newItems = items.map((item) => {
+  const newItems = items.map(async (item) => {
+    const { rank } = await db.get(
+      "SELECT * FROM item_price WHERE item_code LIKE ?",
+      [`%${item.item_code}%`]
+    );
+
     return {
       id: item.id,
       itemName: item.item_name,
       itemCode: item.item_code,
       kindName: item.kind_name,
-      rank: item.rank,
+      rank,
     };
   });
 
-  return newItems;
+  return Promise.all(newItems);
 };
 
 export const retrieveItemDataByCode = async (
   itemCode: number | string
 ): Promise<BasicItemSummary> => {
-  // 해당 키워드를 items 테이블에서 찾아서 itemName, item_code, kindName 넣어서 반환.
   const db = await openDB();
   const item = await db.get("SELECT * FROM items WHERE item_code LIKE ?", [
     `%${itemCode}%`,
   ]);
+  const { rank } = await db.get(
+    "SELECT * FROM item_price WHERE item_code LIKE ?",
+    [`%${item.item_code}%`]
+  );
 
   const newItem = {
     id: item.id,
     itemName: item.item_name,
     itemCode: item.item_code,
     kindName: item.kind_name,
-    rank: item.rank,
+    rank,
   };
 
   return newItem;
 };
 
 export const getWiki = async (itemCode: number | string): Promise<string> => {
-  // 해당 키워드를 items 테이블에서 찾아서 itemName, item_code, kindName 넣어서 반환.
   const db = await openDB();
   const item = await db.get("SELECT * FROM wiki WHERE item_code LIKE ?", [
     `%${itemCode}%`,
@@ -69,14 +75,14 @@ export const getPrice = async (
     );
     if (data.length === 0) {
       daysTracingBack++;
-      subDays(startDate, 1);
+      startDate = subDays(startDate, 1);
       continue;
     }
 
     const price = data[0].price;
-    if (price === 0) {
+    if (!price || price === 0) {
       daysTracingBack++;
-      subDays(startDate, 1);
+      startDate = subDays(startDate, 1);
     } else {
       const result: ItemPrice = {
         price,

@@ -16,54 +16,6 @@ import { TrendingDown, TrendingUp } from "lucide-react";
 import { ItemSummary } from "@/types/item";
 import styles from "@/app/icons.module.scss";
 
-const LIST = [
-  {
-    item_code: "100",
-    item_name: "쌀",
-    kind_name: "백미",
-    item_price: 10000,
-    rank: "상품",
-    diff: 1000,
-    date: "2021-10-01",
-  },
-  {
-    item_code: "200",
-    item_name: "찹쌀",
-    kind_name: "찹쌀",
-    item_price: 15000,
-    rank: "상품",
-    diff: -500,
-    date: "2021-10-01",
-  },
-  {
-    item_code: "300",
-    item_name: "콩",
-    kind_name: "콩",
-    item_price: 8000,
-    rank: "상품",
-    diff: 0,
-    date: "2021-10-01",
-  },
-  {
-    item_code: "400",
-    item_name: "팥",
-    kind_name: "팥",
-    item_price: 12000,
-    rank: "상품",
-    diff: 2000,
-    date: "2021-10-01",
-  },
-  {
-    item_code: "500",
-    item_name: "녹두",
-    kind_name: "녹두",
-    item_price: 7000,
-    rank: "상품",
-    diff: -1000,
-    date: "2021-10-01",
-  },
-];
-
 async function getData(keyword: string): Promise<ItemSummary[]> {
   const res = await fetch(`/api/items?keyword=${keyword}`);
   if (res.status !== 200) {
@@ -96,7 +48,7 @@ export default function SearchPage({
         </Text>{" "}
         키워드로 검색한&nbsp;
         <Text as="span" color="brand.500">
-          {LIST.length}개
+          {data.length}개
         </Text>
         의 결과입니다.
       </Heading>
@@ -121,7 +73,7 @@ export default function SearchPage({
               </Link>
               <Box mb={4}>
                 <Text fontSize="xl" fontWeight="700" color="brand.500">
-                  1000원
+                  {`${info.itemPrice}원`}
                 </Text>
                 {/* TODO: API에 가격이 없음. info.item_price.toLocaleString() */}
                 <Text color="gray.500" fontWeight="700">

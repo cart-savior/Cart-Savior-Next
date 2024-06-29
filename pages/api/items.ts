@@ -60,7 +60,7 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ItemSummary[]>
 ) => {
-  const today = new Date(2024, 5, 28);
+  const today = new Date();
   const { keyword } = req.query;
 
   const keywords = replaceSearchKeyword(keyword as string);
@@ -79,6 +79,7 @@ const handler = async (
       const diffWeekAgo = todayPrice.price - lastWeekPrice.price;
       const newItem: ItemSummary = {
         ...item,
+        itemPrice: todayPrice.price,
         diffWeekAgo,
         rank: todayPrice.rank,
         searchDate: format(todayPrice.searchDate, "yyyy-MM-dd"),

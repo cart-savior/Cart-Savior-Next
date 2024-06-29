@@ -1,5 +1,5 @@
 import { fill_price_one_day_data } from "../../src/fill-db";
-const { format } = require("date-fns");
+import { format } from "date-fns";
 
 export default async function handler(req, res) {
   if (
