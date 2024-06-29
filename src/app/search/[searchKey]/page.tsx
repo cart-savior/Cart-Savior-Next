@@ -83,7 +83,7 @@ export default function SearchPage({ params }: { params: { searchKey: string } }
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4} mt={6}>
         {data.map((info, index) => (
           <Box key={index} p={6} bgColor="white" borderWidth="1px" rounded="lg" boxShadow="sm">
-            <Link href={`/detail/${index}`} className={`${styles.item_info} ${styles[`type_${info.itemCode}`]}`} mb={4} display="block">
+            <Link href={`/detail/${info.itemName}`} className={`${styles.item_info} ${styles[`type_${info.itemCode}`]}`} mb={4} display="block">
               <Heading as="h3" size="md">{info.itemName} ({info.rank})</Heading>
               <Text fontSize="sm" color="gray.500">{info.kindName}</Text>
             </Link>
@@ -107,7 +107,7 @@ export default function SearchPage({ params }: { params: { searchKey: string } }
             </Box>
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="sm" color="gray.500">{new Date(info.searchDate).toLocaleDateString('ko-KR', { year: '2-digit', month: 'numeric', day: 'numeric' })} 기준</Text>
-              <Button as={Link} href={`/detail/${index}`} variant="brand_light">자세히 보기</Button>
+              <Button as={Link} href={`/detail/${info.itemName}`} variant="brand_light">자세히 보기</Button>
             </Flex>
           </Box>
         ))}

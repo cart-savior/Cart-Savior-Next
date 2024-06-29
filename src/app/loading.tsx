@@ -7,11 +7,10 @@ export default function Loading() {
       justifyContent="center"
       alignItems="center"
       height="100vh"
-      bg="red.500"
-      color="white"
+      color="gray.500"
       fontSize="xl"
     >
-      <Spinner size="xl" />
+      <Spinner size="xl" mr={4} />
       Loading...
     </Box>
   );

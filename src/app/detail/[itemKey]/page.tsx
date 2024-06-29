@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from "next/image";
-import { Box, Heading, Text, SimpleGrid, Flex, Button, Link, Select, Icon, Spacer } from '@chakra-ui/react';
+import { Box, Heading, Text, SimpleGrid, Flex, Button, Link, Select, Icon, Spacer, HStack, Divider, VStack, Skeleton } from '@chakra-ui/react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { MoveDown, MoveUp } from 'lucide-react';
 import styles from "@/app/icons.module.scss";
+import { ItemTips } from '@/types/item';
 
 const item = {
   item_code: "123456",
@@ -26,8 +27,27 @@ const item = {
 
 type Unit = 'kg' | 'g' | 'mg';
 
-export default function SearchPage({ params }: { params: { itemKey: string } }) {
+async function getData(itemName: string): Promise<ItemTips> {
+  const res = await fetch(`/api/itemTips?itemName=${itemName}`);
+  if (res.status !== 200) {
+    throw new Error('Failed to fetch data');
+  }
+  return res.json();
+}
+
+export default function DetailPage({ params }: { params: { itemKey: string } }) {
   const [unit, setUnit] = useState<Unit>('kg');
+  const [itemTipsData, setItemTipsData] = useState<ItemTips>();
+  const itemKey = decodeURIComponent(params.itemKey);
+  console.log(itemTipsData, itemKey);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getData(itemKey);
+      setItemTipsData(result);
+    }
+    fetchData();
+  }, [])
+  console.log('itemTipsData', itemTipsData)
 
   const changeUnit = (price: number) => {
     if (unit === 'kg') {
@@ -115,14 +135,38 @@ export default function SearchPage({ params }: { params: { itemKey: string } }) 
           </ResponsiveContainer>
         </Box>
       </SimpleGrid>
-
-      <Flex align="center" gap={4} mb={4} p={4} border="1px" borderColor="gray.200" rounded="lg" bgColor="white">
-        <Image src="/images/icon_loading.png" alt="Loading" width={50} height={50} />
-        <Box>
-          <Text size="md" color="gray.500">Tip</Text>
-          <Text size="lg" fontWeight="bold">{item.wiki}</Text>
+      <Heading as="h3" size="md" mt={8}>{`좋은 ${itemKey} 고르는 방법`}</Heading>
+      <Skeleton isLoaded={!!itemTipsData} height={16}>
+        <Box mt={4} p={4} rounded="lg" bgColor="white">
+          <Text size="lg" fontWeight="bold">{itemTipsData?.tips}</Text>
         </Box>
-      </Flex>
+      </Skeleton>
+      <Heading as="h3" size="md" mt={8}>원하는 식재료가 너무 비싸다면?</Heading>
+      <Skeleton isLoaded={!!itemTipsData} height={16}>
+        <HStack mt={4} gap={2}>
+          {itemTipsData?.substitute.map((substitute) => (
+            <Link key={substitute} href={`/search/${substitute}`} px="2" py="1" borderRadius="md" bg="green.500" color="white">
+              # {substitute}
+            </Link>
+          ))}
+        </HStack>
+      </Skeleton>
+      <Heading as="h3" size="md" mt={8}>이런 레시피는 어때요?</Heading>
+      <Skeleton isLoaded={!!itemTipsData} height={32}>
+        <Box mt={4} p={4} rounded="lg" bgColor="white">
+          <Text fontSize="lg" fontWeight="bold">{itemTipsData?.recipe.title}</Text>
+          <Divider mt={4} />
+          <Heading size="sm" mt={4} mb={4}>재료</Heading>
+          <Text as="span" mr={2} fontSize="md" color="gray.600">{itemTipsData?.recipe.ingredients.join(', ')}</Text>
+          <Divider mt={4} />
+          <Heading size="sm" mt={4}>조리법</Heading>
+          <VStack mt={4} gap={2} alignItems="flex-start">
+            {itemTipsData?.recipe.steps.map((step, index) => (
+              <Text key={index} fontSize="md">{`${index + 1}. ${step}`}</Text>
+            ))}
+          </VStack>
+        </Box>
+      </Skeleton>
     </Box>
   )
 }

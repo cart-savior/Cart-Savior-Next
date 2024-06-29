@@ -18,3 +18,13 @@ export interface ItemPrice {
   rank: string;
   searchDate: Date;
 }
+
+export interface ItemTips {
+  tips: string;
+  substitute: string[];
+  recipe: {
+    title: string;
+    ingredients: string[];
+    steps: string[];
+  };
+}
