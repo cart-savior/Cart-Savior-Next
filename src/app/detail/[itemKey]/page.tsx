@@ -191,14 +191,14 @@ export default function DetailPage({ params }: { params: { itemKey: string } }) 
       </Skeleton>
       <Heading as="h3" size="md" mt={8}>단가 계산하기</Heading>
       <Skeleton isLoaded={!!item.item_price}>
-        <Flex alignItems="center" mt={4} p={4} rounded="lg" bgColor="white" boxShadow="md" fontSize="lg">
-          <Select w={32} onChange={(e) => handleSelectUnit(e.target.value)}>
+        <Flex alignItems="center" mt={4} p={4} rounded="lg" bgColor="white" boxShadow="md" fontSize="lg" flexWrap="wrap">
+          <Select w={24} mr={3} onChange={(e) => handleSelectUnit(e.target.value)}>
             <option value="1kg">1kg</option>
             <option value="500g">500g</option>
             <option value="100g">100g</option>
             <option value="1g">1g</option>
           </Select>
-          &nbsp;기준으로&nbsp;
+          기준으로&nbsp;
           <Text as="span" fontWeight="bold" color="brand.500">
             {changeUnit(item.item_price).toLocaleString()}원
           </Text>
