@@ -21,7 +21,7 @@ export async function fill_price_one_day_data(date) {
         `&p_item_category_code=${category}`;
       const response = await axios.get(url);
       const obj = response.data;
-      console.log(obj);
+      console.log(category, format_date);
 
       if (!obj.data || !obj.data.item) {
         continue; // Skip if no data or item in response

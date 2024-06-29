@@ -79,7 +79,7 @@ export default function SearchPage({
 }) {
   const [data, setData] = useState<ItemSummary[]>([]);
   const searchKey = decodeURIComponent(params.searchKey);
-  console.log(data, searchKey);
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await getData(searchKey);
