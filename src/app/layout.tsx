@@ -1,16 +1,21 @@
-"use client";
-
 import { Suspense } from "react";
+import type { Metadata } from 'next'
 import { Inter } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
-import { Box, Container, HStack } from "@chakra-ui/react";
-import SearchBox from "@/components/SearchBox";
+import { Flex, Spacer, Text } from "@chakra-ui/react";
+import Header from "@/components/Header";
 import { Providers } from "./providers";
-import "./globals.scss";
 import Loading from "./loading";
+import "./globals.scss";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: '카트 세이버',
+  description: '장보기 전, 이제는 시세 먼저 보자',
+  icons: [
+    { url: '/images/favicon.ico', rel: 'icon' },
+  ]
+}
 
 export default function RootLayout({
   children,
@@ -21,17 +26,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Box bgColor="brand.50" minH="100vh">
-            <HStack as="nav" px={6} py={4} justify="space-between">
-              <Link href="/">
-                <Image src="/images/logo_pc.svg" alt="Logo" width={160} height={50} />
-              </Link>
-              <SearchBox />
-            </HStack>
+          <Flex direction="column" bgColor="white" minH="100vh" backgroundImage="/images/background.svg" backgroundSize="cover">
+            <Header />
             <Suspense fallback={<Loading />}>
-              <Container maxW="container.xl">{children}</Container>
+              {children}
             </Suspense>
-          </Box>
+            <Spacer />
+            <Text textAlign="center" color="gray.600" fontSize="md" py={4}>
+              © 2024 cart savior.
+            </Text>
+          </Flex>
         </Providers>
       </body>
     </html>

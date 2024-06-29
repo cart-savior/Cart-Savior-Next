@@ -24,7 +24,7 @@ export default function SearchBox() {
     }
   }
   return (
-    <Flex pl={4} border="1px" borderColor="gray.200" bgColor="white" rounded="lg">
+    <Flex maxW={72} pl={4} border="1px" borderColor="gray.200" bgColor="white" rounded="lg">
       <Input
         value={searchValue}
         variant="unstyled"
