@@ -1,12 +1,11 @@
-import { PostItemTipsApiResponse, PostItemTipsApiRequest } from '@/types/api';
-import { ItemTips } from '@/types/item';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { PostItemTipsApiResponse, PostItemTipsApiRequest } from "@/types/api";
+import { ItemTips } from "@/types/item";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? "");
 
 const postItemTips = async ({ itemName }: PostItemTipsApiRequest) => {
-  console.log('itemName', itemName)
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
@@ -56,11 +55,10 @@ ${itemName}
   const text = response.text();
   const jsonMatchedString = text.match(/\{[\s\S]*\}/);
   if (!jsonMatchedString) {
-    throw new Error('Failed to parse JSON');
+    throw new Error("Failed to parse JSON");
   }
   const jsonObject = jsonMatchedString[0];
   const data = JSON.parse(jsonObject) as ItemTips;
-  console.log(data);
   return data;
 };
 
@@ -71,6 +69,6 @@ const handler = async (
   const { itemName } = req.query;
   const data = await postItemTips({ itemName: itemName as string });
   res.status(200).json(data);
-}
+};
 
 export default handler;
