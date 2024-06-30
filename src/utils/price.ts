@@ -5,26 +5,34 @@ import { format, subDays } from "date-fns";
 export const retrieveItemData = async (
   keyword: string
 ): Promise<BasicItemSummary[]> => {
+  const result: BasicItemSummary[] = [];
   const db = await openDB();
   const items = await db.all("SELECT * FROM items WHERE item_name LIKE ?", [
     `%${keyword}%`,
   ]);
-  const newItems = items.map(async (item) => {
-    const { rank } = await db.get(
-      "SELECT * FROM item_price WHERE item_code LIKE ?",
-      [`%${item.item_code}%`]
+  for (const item of items) {
+    const rankItem = await db.get(
+      "SELECT * FROM item_price WHERE item_code LIKE ? AND kind_name LIKE ? ORDER BY date DESC",
+      [`%${item.item_code}%`, `%${item.kind_name}%`]
     );
 
-    return {
+    if (!rankItem) {
+      continue;
+    }
+
+    const { rank } = rankItem;
+
+    const newItem = {
       id: item.id,
       itemName: item.item_name,
       itemCode: item.item_code,
       kindName: item.kind_name,
       rank,
     };
-  });
+    result.push(newItem);
+  }
 
-  return Promise.all(newItems);
+  return result;
 };
 
 export const retrieveItemDataByCode = async (
