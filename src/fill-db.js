@@ -1,7 +1,6 @@
-require("dotenv").config();
-const axios = require("axios");
-const sqlite3 = require("sqlite3").verbose(); // Assuming sqlite3 package is installed
-const { addDays, format } = require("date-fns");
+import axios from "axios";
+import sqlite3 from "sqlite3"; // Assuming sqlite3 package is installd
+import { addDays, format } from "date-fns";
 
 export async function fill_price_one_day_data(date) {
   const categories = ["100", "200", "300", "400", "500", "600"];
