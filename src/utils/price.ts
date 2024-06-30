@@ -36,12 +36,14 @@ export const retrieveItemData = async (
 };
 
 export const retrieveItemDataByCode = async (
-  itemCode: number | string
+  itemCode: number | string,
+  kindName: string
 ): Promise<BasicItemSummary> => {
   const db = await openDB();
-  const item = await db.get("SELECT * FROM items WHERE item_code LIKE ?", [
-    `%${itemCode}%`,
-  ]);
+  const item = await db.get(
+    "SELECT * FROM items WHERE item_code LIKE ? AND kind_name LIKE ?",
+    [`%${itemCode}%`, `%${kindName}%`]
+  );
   const { rank } = await db.get(
     "SELECT * FROM item_price WHERE item_code LIKE ?",
     [`%${item.item_code}%`]

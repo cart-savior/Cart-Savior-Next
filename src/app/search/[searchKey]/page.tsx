@@ -140,7 +140,7 @@ export default function SearchPage({
                   </Text>
                   <Button
                     as={Link}
-                    href={`/detail/?itemCode=${info.itemCode}&date=${info.searchDate}`}
+                    href={`/detail/?itemCode=${info.itemCode}&kindName=${info.kindName}&date=${info.searchDate}`}
                     variant="brand_light"
                   >
                     자세히 보기

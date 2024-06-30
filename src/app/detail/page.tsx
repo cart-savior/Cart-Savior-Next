@@ -52,6 +52,7 @@ async function getItemTips(itemName: string): Promise<ItemTips> {
 export default function DetailPage() {
   const searchParams = useSearchParams();
   const itemCode = searchParams?.get("itemCode");
+  const kindName = searchParams?.get("kindName");
   const date = searchParams?.get("date");
   const [unit, setUnit] = useState<Unit>("1kg");
   const [item, setItem] = useState<ItemDetail | null>(null);
@@ -70,7 +71,7 @@ export default function DetailPage() {
   useEffect(() => {
     const fetchData = async () => {
       const { data: item } = await axios.get<ItemDetail>(
-        `/api/detail/?itemCode=${itemCode}&date=${date}`
+        `/api/detail/?itemCode=${itemCode}&kindName=${kindName}&date=${date}`
       );
       setItem(item);
 

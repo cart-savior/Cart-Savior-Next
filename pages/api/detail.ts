@@ -5,9 +5,10 @@ import { getPrice, getWiki, retrieveItemDataByCode } from "@/utils/price";
 
 const getDetail = async (
   itemCode: number | string,
+  kindName: string,
   date: Date
 ): Promise<ItemDetail | null> => {
-  const item = await retrieveItemDataByCode(itemCode);
+  const item = await retrieveItemDataByCode(itemCode, kindName);
   const stringDate = format(date, "yyyy-MM-dd");
   const itemPrice = await getPrice(item, date);
 
@@ -54,9 +55,13 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ItemDetail>
 ) => {
-  const { itemCode, date } = req.query;
+  const { itemCode, date, kindName } = req.query;
   const dateObject = parse(date as string, "yyyy-MM-dd", "2024-06-05");
-  const detail = await getDetail(itemCode as string, dateObject);
+  const detail = await getDetail(
+    itemCode as string,
+    kindName as string,
+    dateObject
+  );
 
   if (detail) {
     return res.status(200).json(detail);
