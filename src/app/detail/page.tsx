@@ -289,6 +289,27 @@ export default function DetailPage() {
               &nbsp;입니다.
             </Flex>
           </Skeleton>
+          <Heading as="h3" size="md" mt={8}>
+            원하는 식재료가 너무 비싸다면?
+          </Heading>
+          <Skeleton isLoaded={!!itemTipsData}>
+            <HStack mt={4} gap={2}>
+              {itemTipsData?.substitute.map((substitute) => (
+                <Link
+                  key={substitute}
+                  href={`/search/${substitute}`}
+                  px={3}
+                  py={1}
+                  rounded="lg"
+                  boxShadow="md"
+                  bg="brand.500"
+                  color="white"
+                >
+                  # {substitute}
+                </Link>
+              ))}
+            </HStack>
+          </Skeleton>
           <Heading
             as="h3"
             size="md"
@@ -354,27 +375,6 @@ export default function DetailPage() {
                 ))}
               </VStack>
             </Box>
-          </Skeleton>
-          <Heading as="h3" size="md" mt={8}>
-            원하는 식재료가 너무 비싸다면?
-          </Heading>
-          <Skeleton isLoaded={!!itemTipsData}>
-            <HStack mt={4} gap={2}>
-              {itemTipsData?.substitute.map((substitute) => (
-                <Link
-                  key={substitute}
-                  href={`/search/${substitute}`}
-                  px={3}
-                  py={1}
-                  rounded="lg"
-                  boxShadow="md"
-                  bg="brand.500"
-                  color="white"
-                >
-                  # {substitute}
-                </Link>
-              ))}
-            </HStack>
           </Skeleton>
         </Box>
       )}
