@@ -36,16 +36,18 @@ const KEYWORD_REPLACERS = [
   },
   {
     input: "삽결살",
-    output: ["돼지고기"],
+    output: ["돼지"],
   },
   {
     input: "목살",
-    output: ["돼지고기"],
+    output: ["돼지"],
   },
 ];
 
 const replaceSearchKeyword = (keyword: string) => {
   // 키워드를 대치해주고 배열로 반환
+  // 최근 데이터에서 고기가 누락되어 고기 제거
+  keyword = keyword.replace("고기", "");
   let replacedKeywords = [keyword];
   for (const replacer of KEYWORD_REPLACERS) {
     if (replacer.input === keyword) {
