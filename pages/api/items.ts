@@ -7,10 +7,6 @@ import { getPrice, retrieveItemData } from "@/utils/price";
 
 const KEYWORD_REPLACERS = [
   {
-    input: "소고기",
-    output: ["쇠고기"],
-  },
-  {
     input: "키위",
     output: ["참다래"],
   },
