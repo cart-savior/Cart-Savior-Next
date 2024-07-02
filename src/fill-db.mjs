@@ -85,7 +85,7 @@ async function runForDateRange(startDate, endDate) {
 }
 
 const endDate = new Date(); // Today's date
-const startDate = addDays(endDate, -(365 * 1 + 30)); // One year and a month ago
+const startDate = addDays(endDate, -5); // One year and a month ago
 
 runForDateRange(startDate, endDate)
   .then(() => {
