@@ -1,8 +1,6 @@
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { format, subDays } from "date-fns";
-import { openDB } from "@/db";
-import { BasicItemSummary, ItemPrice, ItemSummary } from "@/types/item";
+import { BasicItemSummary, ItemSummary } from "@/types/item";
 import { getPrice, retrieveItemData } from "@/utils/price";
 
 const KEYWORD_REPLACERS = [
