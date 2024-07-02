@@ -1,13 +1,10 @@
 import axios from "axios";
-import sqlite3 from "sqlite3"; // Assuming sqlite3 package is installd
 import { addDays, format } from "date-fns";
+import { pool } from "./db";
 
 export async function fill_price_one_day_data(date) {
   const categories = ["100", "200", "300", "400", "500", "600"];
   let result = [];
-
-  // Establish SQLite connection
-  let db = new sqlite3.Database("src/cart_savior.db");
 
   for (const category of categories) {
     try {
@@ -46,29 +43,32 @@ export async function fill_price_one_day_data(date) {
     }
   }
 
-  // Insert data into SQLite database
-  result.forEach((item) => {
-    db.run(
-      `INSERT or REPLACE INTO item_price(date, item_name, item_code, kind_name, rank, unit, price) VALUES(?, ?, ?, ?, ?, ?, ?)`,
-      [
-        date,
-        item.item_name,
-        item.item_code,
-        item.kind_name,
-        item.rank,
-        item.unit,
-        item.price,
-      ],
-      (err) => {
-        if (err) {
-          console.error(`Error inserting data: ${err.message}`);
-        }
-      }
-    );
-  });
+  // Insert data into psql database
+  const client = await pool.connect();
 
-  // Close SQLite connection
-  db.close();
+  try {
+    await client.query("BEGIN");
+    for (const item of result) {
+      await client.query(
+        `INSERT INTO item_price(date, item_name, item_code, kind_name, rank, unit, price) VALUES($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING`,
+        [
+          date,
+          item.item_name,
+          item.item_code,
+          item.kind_name,
+          item.rank,
+          item.unit,
+          item.price,
+        ]
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 // Example usage:
