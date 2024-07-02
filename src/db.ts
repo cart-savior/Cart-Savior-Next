@@ -1,11 +1,5 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
+import { createPool } from '@vercel/postgres';
 
-
-export const openDB = async() => {
-    return open({
-      filename: path.resolve(process.cwd(), 'src/cart_savior.db'),
-      driver: sqlite3.Database
-    });
-  }
+export const pool = createPool({
+  connectionString: process.env.POSTGRES_URL
+});
