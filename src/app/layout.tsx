@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from 'next'
 import { Inter } from "next/font/google";
-import { Flex, Spacer, Text } from "@chakra-ui/react";
+import { Flex, Spacer, Box } from "@chakra-ui/react";
 import Header from "@/components/Header";
 import { Providers } from "./providers";
 import Loading from "./loading";
@@ -32,9 +32,9 @@ export default function RootLayout({
               {children}
             </Suspense>
             <Spacer />
-            <Text textAlign="center" color="gray.600" fontSize="md" py={4}>
+            <Box textAlign="center" color="gray.600" fontSize="md" mt={10} mb={4}>
               © 2024 cart savior.
-            </Text>
+            </Box>
           </Flex>
         </Providers>
       </body>

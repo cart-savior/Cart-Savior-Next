@@ -60,7 +60,7 @@ export default function SearchPage({
               <Text as="span" color="brand.500">
                 {searchKey}
               </Text>
-              로 검색한 최근 10일까지의 데이터가 없습니다.
+              (으)로 검색한 최근 10일까지의 데이터가 없습니다.
             </>
           )}
         </Heading>
