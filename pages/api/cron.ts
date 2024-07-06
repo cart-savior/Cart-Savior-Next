@@ -2,6 +2,10 @@ import { fill_price_one_day_data } from "../../src/fill-db.mjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { format } from "date-fns";
 
+export const config = {
+  maxDuration: 300,
+};
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
