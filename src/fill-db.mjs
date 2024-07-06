@@ -1,5 +1,4 @@
 import axios from "axios";
-import { addDays, format } from "date-fns";
 import { pool } from "./db";
 
 export async function fill_price_one_day_data(date) {
@@ -70,27 +69,3 @@ export async function fill_price_one_day_data(date) {
     client.release();
   }
 }
-
-// Example usage:
-const date = "2024-06-27"; // Replace with your desired date
-fill_price_one_day_data(date);
-
-async function runForDateRange(startDate, endDate) {
-  let currentDate = startDate;
-  while (currentDate <= endDate) {
-    const stringDate = format(currentDate, "yyyy-MM-dd");
-    await fill_price_one_day_data(stringDate);
-    currentDate = addDays(currentDate, 1);
-  }
-}
-
-const endDate = new Date(); // Today's date
-const startDate = addDays(endDate, -5); // One year and a month ago
-
-runForDateRange(startDate, endDate)
-  .then(() => {
-    console.log("Data import completed successfully.");
-  })
-  .catch((error) => {
-    console.error("Error during data import:", error);
-  });
